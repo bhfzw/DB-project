@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Тест выпускников</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Имя</th>
+            <th>Фамилия</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for graduate in graduates %}
+        <tr>
+            <td>{{ graduate.graduate_id }}</td>
+            <td>{{ graduate.first_name }}</td>
+            <td>{{ graduate.last_name }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

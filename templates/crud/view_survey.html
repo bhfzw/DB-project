@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Просмотр опроса: {{ survey.title }}</h2>
+    <div>
+        <a href="{{ url_for('crud_surveys') }}" class="btn btn-secondary">Назад к списку</a>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSectionModal">Добавить раздел</button>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addQuestionModal">Добавить вопрос</button>
+    </div>
+</div>
+
+<!-- Сообщения flash -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Информация об опросе</h5>
+        <p><strong>ID:</strong> {{ survey.survey_id }}</p>
+        <p><strong>Название:</strong> {{ survey.title }}</p>
+        <p><strong>Описание:</strong> {{ survey.description or 'Нет описания' }}</p>
+        <p><strong>Дата создания:</strong> {{ survey.created_at.strftime('%d.%m.%Y %H:%M') if survey.created_at else 'Не указана' }}</p>
+    </div>
+</div>
+
+<!-- Секции и вопросы -->
+{% for section in sections %}
+<div class="card mb-3">
+    <div class="card-header bg-light">
+        <h5 class="mb-0">{{ section.title }}</h5>
+        {% if section.description %}
+        <p class="mb-0 text-muted">{{ section.description }}</p>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        {% set section_questions = questions|selectattr("section_id", "equalto", section.section_id)|list %}
+        {% if section_questions %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Текст вопроса</th>
+                            <th>Тип вопроса</th>
+                            <th>Обязательный</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for question in section_questions %}
+                        <tr>
+                            <td>{{ question.question_id }}</td>
+                            <td>{{ question.question_text }}</td>
+                            <td>
+                                {% if question.question_type == 'text' %}
+                                    Текстовый
+                                {% elif question.question_type == 'single_choice' %}
+                                    Один вариант
+                                {% elif question.question_type == 'multiple_choice' %}
+                                    Несколько вариантов
+                                {% else %}
+                                    {{ question.question_type }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if question.is_required %}
+                                    <span class="badge bg-danger">Да</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Нет</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('delete_question', id=question.question_id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Вы уверены, что хотите удалить этот вопрос?')">Удалить</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted">В этом разделе пока нет вопросов.</p>
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+
+{% if not sections %}
+<div class="card">
+    <div class="card-body text-center">
+        <p class="text-muted">В этом опросе пока нет разделов. Добавьте раздел, чтобы начать создавать вопросы.</p>
+    </div>
+</div>
+{% endif %}
+
+<!-- Modal для добавления раздела -->
+<div class="modal fade" id="addSectionModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Добавить раздел</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('add_section', survey_id=survey.survey_id) }}">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Название раздела</label>
+                        <input type="text" class="form-control" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Описание (необязательно)</label>
+                        <textarea class="form-control" name="description" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Добавить раздел</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal для добавления вопроса -->
+<div class="modal fade" id="addQuestionModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Добавить вопрос</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('add_question', survey_id=survey.survey_id) }}">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Раздел</label>
+                        <select class="form-select" name="section_id" required>
+                            <option value="">Выберите раздел</option>
+                            {% for section in sections %}
+                            <option value="{{ section.section_id }}">{{ section.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Текст вопроса</label>
+                        <textarea class="form-control" name="question_text" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Тип вопроса</label>
+                        <select class="form-select" name="question_type" id="questionType" required>
+                            <option value="text">Текстовый ответ</option>
+                            <option value="single_choice">Один вариант ответа</option>
+                            <option value="multiple_choice">Несколько вариантов ответа</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="is_required" id="isRequired">
+                            <label class="form-check-label" for="isRequired">
+                                Обязательный вопрос
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mb-3" id="choicesSection" style="display: none;">
+                        <label class="form-label">Варианты ответов</label>
+                        <div id="choicesContainer">
+                            <div class="input-group mb-2">
+                                <input type="text" class="form-control" name="choices[]" placeholder="Введите вариант ответа">
+                                <button type="button" class="btn btn-outline-danger" onclick="removeChoice(this)">×</button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="addChoice()">+ Добавить вариант</button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Добавить вопрос</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Показываем/скрываем поле вариантов ответов в зависимости от типа вопроса
+document.getElementById('questionType').addEventListener('change', function() {
+    const choicesSection = document.getElementById('choicesSection');
+    if (this.value === 'single_choice' || this.value === 'multiple_choice') {
+        choicesSection.style.display = 'block';
+    } else {
+        choicesSection.style.display = 'none';
+    }
+});
+
+// Добавление нового поля для варианта ответа
+function addChoice() {
+    const container = document.getElementById('choicesContainer');
+    const newChoice = document.createElement('div');
+    newChoice.className = 'input-group mb-2';
+    newChoice.innerHTML = `
+        <input type="text" class="form-control" name="choices[]" placeholder="Введите вариант ответа">
+        <button type="button" class="btn btn-outline-danger" onclick="removeChoice(this)">×</button>
+    `;
+    container.appendChild(newChoice);
+}
+
+// Удаление поля варианта ответа
+function removeChoice(button) {
+    button.parentElement.remove();
+}
+</script>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Ответы выпускников</h2>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID ответа</th>
+                        <th>Выпускник</th>
+                        <th>Опрос</th>
+                        <th>Вопрос</th>
+                        <th>Ответ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for answer in answers %}
+                    <tr>
+                        <td>{{ answer.answer_id }}</td>
+                        <td>{{ answer.first_name }} {{ answer.last_name }}</td>
+                        <td>{{ answer.survey_title }}</td>
+                        <td>{{ answer.question_text }}</td>
+                        <td>{{ answer.choice_text or 'Текстовый ответ' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

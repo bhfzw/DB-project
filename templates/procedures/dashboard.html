@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>📊 Процедуры базы данных</h1>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Управление процедурами</h5>
+        </div>
+        <div class="card-body">
+            <a href="{{ url_for('create_procedures_route') }}" class="btn btn-success mb-2">
+                🔧 Создать/Обновить процедуры
+            </a>
+            
+            <div class="table-responsive mt-3">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Процедура</th>
+                            <th>Описание</th>
+                            <th>Студент</th>
+                            <th>Статус</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for proc_name, proc_data in student1_procedures.items() %}
+                        <tr>
+                            <td><code>{{ proc_name }}</code></td>
+                            <td>{{ proc_data.description }}</td>
+                            <td>{{ proc_data.student }}</td>
+                            <td>
+                                {% if procedures_status.get(proc_name, False) %}
+                                <span class="badge bg-success">Активна</span>
+                                {% else %}
+                                <span class="badge bg-danger">Не активна</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% for proc_name, proc_data in student2_procedures.items() %}
+                        <tr>
+                            <td><code>{{ proc_name }}</code></td>
+                            <td>{{ proc_data.description }}</td>
+                            <td>{{ proc_data.student }}</td>
+                            <td>
+                                {% if procedures_status.get(proc_name, False) %}
+                                <span class="badge bg-success">Активна</span>
+                                {% else %}
+                                <span class="badge bg-danger">Не активна</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Студент 1: Вострухин Д.М. -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">👨‍🎓 Вострухин Д.М.</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6>GetGraduateStats</h6>
+                        <p class="small text-muted">Статистика выпускников по году выпуска</p>
+                        <form method="get" action="{{ url_for('graduate_stats_by_year') }}" class="row g-2">
+                            <div class="col-8">
+                                <select name="year" class="form-select">
+                                    <option value="2020">2020 год</option>
+                                    <option value="2021">2021 год</option>
+                                    <option value="2022">2022 год</option>
+                                    <option value="2023">2023 год</option>
+                                </select>
+                            </div>
+                            <div class="col-4">
+                                <button type="submit" class="btn btn-primary w-100">Выполнить</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6>GetFacultyGraduatesStats</h6>
+                        <p class="small text-muted">Статистика выпускников по факультету</p>
+                        <form method="get" action="{{ url_for('faculty_graduates_stats') }}" class="row g-2">
+                            <div class="col-8">
+                                <select name="faculty_id" class="form-select">
+                                    <option value="1">Факультет компьютерных наук</option>
+                                    <option value="2">Инженерный факультет</option>
+                                    <option value="3">Экономический факультет</option>
+                                    <option value="4">Юридический факультет</option>
+                                    <option value="5">Медицинский факультет</option>
+                                </select>
+                            </div>
+                            <div class="col-4">
+                                <button type="submit" class="btn btn-primary w-100">Выполнить</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Студент 2: Яценко И.Ю. -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">👩‍🎓 Яценко И.Ю.</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6>GetSurveyResponseStats</h6>
+                        <p class="small text-muted">Статистика ответов на опрос</p>
+                        <form method="get" action="{{ url_for('survey_response_stats') }}" class="row g-2">
+                            <div class="col-8">
+                                <select name="survey_id" class="form-select">
+                                    <option value="1">Опрос удовлетворенности 2023</option>
+                                    <option value="2">Трудоустройство IT-выпускников</option>
+                                    <option value="10">Новый транзакционный опрос</option>
+                                    <option value="11">Новый транзакционный опрос</option>
+                                </select>
+                            </div>
+                            <div class="col-4">
+                                <button type="submit" class="btn btn-success w-100">Выполнить</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6>CalculateFacultyStats</h6>
+                        <p class="small text-muted">Общая статистика по факультетам</p>
+                        <a href="{{ url_for('faculty_overview_stats') }}" class="btn btn-success w-100">
+                            Выполнить
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

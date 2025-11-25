@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Управление триггерами{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>🔧 Управление триггерами базы данных</h1>
+    
+    <!-- Статус триггеров -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Статус триггеров</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <a href="{{ url_for('create_triggers_route') }}" class="btn btn-success mb-2">
+                        ✅ Создать все триггеры
+                    </a>
+                    <a href="{{ url_for('drop_triggers_route') }}" class="btn btn-danger mb-2" 
+                       onclick="return confirm('Вы уверены что хотите удалить все триггеры?')">
+                        ❌ Удалить все триггеры
+                    </a>
+                </div>
+                <div class="col-md-6">
+                    <a href="{{ url_for('demonstrate_triggers_route') }}" class="btn btn-info mb-2">
+                        🧪 Демонстрация триггеров
+                    </a>
+                    <a href="{{ url_for('test_audit_trigger') }}" class="btn btn-warning mb-2">
+                        🔍 Тест триггера аудита
+                    </a>
+                </div>
+            </div>
+            
+            <div class="table-responsive mt-3">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Триггер</th>
+                            <th>Описание</th>
+                            <th>Студент</th>
+                            <th>Статус</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for trigger_name, trigger_data in all_triggers.items() %}
+                        <tr>
+                            <td><code>{{ trigger_name }}</code></td>
+                            <td>{{ trigger_data.description }}</td>
+                            <td>{{ trigger_data.student }}</td>
+                            <td>
+                                {% if triggers_status.get(trigger_name, False) %}
+                                <span class="badge bg-success">Активен</span>
+                                {% else %}
+                                <span class="badge bg-danger">Не активен</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Триггеры по студентам -->
+    <div class="row">
+        <!-- Студент 1 -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">👨‍🎓 Вострухин Д.М.</h5>
+                </div>
+                <div class="card-body">
+                    {% for trigger_name, trigger_data in student1_triggers.items() %}
+                    <div class="mb-3 p-2 border rounded">
+                        <h6>{{ trigger_data.description }}</h6>
+                        <small class="text-muted"><code>{{ trigger_name }}</code></small>
+                        <div class="mt-1">
+                            {% if triggers_status.get(trigger_name, False) %}
+                            <span class="badge bg-success">Активен</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Не активен</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Студент 2 -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">👩‍🎓 Яценко И.Ю.</h5>
+                </div>
+                <div class="card-body">
+                    {% for trigger_name, trigger_data in student2_triggers.items() %}
+                    <div class="mb-3 p-2 border rounded">
+                        <h6>{{ trigger_data.description }}</h6>
+                        <small class="text-muted"><code>{{ trigger_name }}</code></small>
+                        <div class="mt-1">
+                            {% if triggers_status.get(trigger_name, False) %}
+                            <span class="badge bg-success">Активен</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Не активен</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

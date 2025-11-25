@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Демонстрация триггеров{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>🧪 Демонстрация работы триггеров</h1>
+    
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Результаты тестирования</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Тест</th>
+                            <th>Студент</th>
+                            <th>Статус</th>
+                            <th>Результат</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for result in results %}
+                        <tr>
+                            <td>{{ result.name }}</td>
+                            <td>{{ result.student }}</td>
+                            <td>
+                                {% if result.status == 'SUCCESS' %}
+                                <span class="badge bg-success">Успех</span>
+                                {% elif result.status == 'EXPECTED_ERROR' %}
+                                <span class="badge bg-warning">Ожидаемая ошибка</span>
+                                {% elif result.status == 'FAILED' %}
+                                <span class="badge bg-danger">Провал</span>
+                                {% else %}
+                                <span class="badge bg-secondary">{{ result.status }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ result.message|safe }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="mt-3">
+                <a href="{{ url_for('triggers_dashboard') }}" class="btn btn-primary">← Назад к управлению триггерами</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

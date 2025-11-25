@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Экспорт данных в CSV</h2>
+    
+    <div class="card">
+        <div class="card-body">
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="report_type" class="form-label">Выберите тип отчета:</label>
+                    <select class="form-select" id="report_type" name="report_type" required>
+                        <option value="">-- Выберите отчет --</option>
+                        <option value="graduates_list">Список выпускников</option>
+                        <option value="survey_results">Результаты опросов</option>
+                        <option value="faculty_stats">Статистика по факультетам</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-download"></i> Скачать CSV
+                </button>
+                
+                <a href="{{ url_for('generate_report') }}" class="btn btn-primary">
+                    <i class="fas fa-file-pdf"></i> Перейти к PDF отчетам
+                </a>
+            </form>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show mt-3" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+{% endblock %}

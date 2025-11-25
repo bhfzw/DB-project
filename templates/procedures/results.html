@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>📊 Результаты процедуры</h1>
+    
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">{{ procedure_name }}</h5>
+            <small class="text-muted">Студент: {{ student }}</small>
+        </div>
+        <div class="card-body">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-info">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% if results %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                {% for key in results[0].keys() %}
+                                <th>{{ key }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in results %}
+                            <tr>
+                                {% for value in row.values() %}
+                                <td>{{ value }}</td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-warning">
+                    Нет данных для отображения
+                </div>
+            {% endif %}
+
+            <div class="mt-3">
+                <a href="{{ url_for('procedures_dashboard') }}" class="btn btn-secondary">← Назад к процедурам</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

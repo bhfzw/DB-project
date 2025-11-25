@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Управление выпускниками</h2>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addGraduateModal">Добавить выпускника</button>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Имя</th>
+                        <th>Фамилия</th>
+                        <th>Email</th>
+                        <th>Год выпуска</th>
+                        <th>Факультет</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for graduate in graduates %}
+                    <tr>
+                        <td>{{ graduate.graduate_id }}</td>
+                        <td>{{ graduate.first_name }}</td>
+                        <td>{{ graduate.last_name }}</td>
+                        <td>{{ graduate.email }}</td>
+                        <td>{{ graduate.graduation_year }}</td>
+                        <td>{{ graduate.faculty_name }}</td>
+                        <td>
+                            <a href="{{ url_for('delete_graduate', id=graduate.graduate_id) }}" 
+                               class="btn btn-danger btn-sm" 
+                               onclick="return confirm('Удалить выпускника?')">Удалить</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal для добавления -->
+<div class="modal fade" id="addGraduateModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Добавить выпускника</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('add_graduate') }}">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Имя</label>
+                        <input type="text" class="form-control" name="first_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Фамилия</label>
+                        <input type="text" class="form-control" name="last_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Год выпуска</label>
+                        <input type="number" class="form-control" name="graduation_year" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Факультет</label>
+                        <select class="form-select" name="faculty" required>
+                            <option value="1">Факультет компьютерных наук</option>
+                            <option value="2">Инженерный факультет</option>
+                            <option value="3">Экономический факультет</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Добавить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
