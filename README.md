@@ -8,14 +8,22 @@
 
 ## Полная последовательность команд для запуска
 
-# 1. Запуск MySQL сервера
+# 1. Запуск и настройка MySQL сервера
 sudo systemctl start mysql
+sudo mysql -u root -p
+CREATE DATABASE graduate_surveys;
+CREATE USER 'web_user'@'localhost' IDENTIFIED BY 'StrongPassword123!';
+GRANT ALL PRIVILEGES ON graduate_surveys.* TO 'web_user'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;
+cd /путь/к/вашему/проекту/sql/init
+sudo mysql -u root -p graduate_surveys < complete_database_dump.sql
 
 # 2. Установка venv (если не установлен)
 sudo apt install python3.12-venv
 
-# 3. Переход в папку с проектом
-cd /путь/к/вашему/проекту
+# 3. Переход обратно в папку с проектом
+cd ../путь/к/вашему/проекту
 
 # 4. Создание виртуального окружения
 python3 -m venv venv
