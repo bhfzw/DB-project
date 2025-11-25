@@ -16,7 +16,7 @@ CREATE USER 'web_user'@'localhost' IDENTIFIED BY 'StrongPassword123!';
 GRANT ALL PRIVILEGES ON graduate_surveys.* TO 'web_user'@'localhost';
 FLUSH PRIVILEGES;
 EXIT;
-cd /путь/к/вашему/проекту/sql/init
+cd /путь/к/вашему/проекту/sql/init (Пример: cd downloads/DB-project/sql/init)
 sudo mysql -u root -p graduate_surveys < complete_database_dump.sql
 
 # 2. Установка venv (если не установлен)
