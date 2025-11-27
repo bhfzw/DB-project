@@ -16,8 +16,8 @@
 - GRANT ALL PRIVILEGES ON graduate_surveys.* TO 'web_user'@'localhost';
 - FLUSH PRIVILEGES;
 - EXIT;
-cd /путь/к/вашему/проекту/sql/init (Пример: cd downloads/DB-project/sql/init)
-sudo mysql -u root -p graduate_surveys < complete_database_dump.sql
+- cd /путь/к/вашему/проекту/sql/init (Пример: cd downloads/DB-project/sql/init)
+- sudo mysql -u root -p graduate_surveys < complete_database_dump.sql
 
 # 2. Установка venv (если не установлен)
 sudo apt install python3.12-venv
@@ -38,5 +38,5 @@ pip install mysql-connector-python flask flask-login python-dotenv reportlab
 python app.py
 
 # 8. Выход из проекта
-ctrl + C 
-deactivate
+- ctrl + C 
+- deactivate
